@@ -29,4 +29,4 @@ This is my solution for the problem statement given as part of Summer Of Bitcoin
 ###3. Result Analysis
 1. The block file which contains the result of the code stores 3362 transactions.
 2. The total weight of the block is 3999936
-3. The total fee of the block is 5696031
+3. The total fee of the block is 5577415
