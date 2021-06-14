@@ -12,9 +12,9 @@ This is my solution for the problem statement given as part of Summer Of Bitcoin
 *The working of the code can be explained in the following 7 steps:*
 1. Store all the transactions in a vector or array and map the txt_id of all the transactions to their corresponding indexes for easy access in future.
 2. Calculate weight_cost and fee_cost for each block respectively and then Calculate their efficiency.
-* weight_cost= The amount of weight required to accept a transaction in block, It is the sum of weights of all the ancestors of a transaction and the weight of transaction itself.
-* fee_cost= The fee earned after we accept a transaction in block, It is the sum of fee of all the ancestors of a transaction and the fee of the transaction itself.
-* efficiency= This is the ratio of fee_cost to weight_cost, the higher the efficiency, more favorable is the transaction. This will help us choose the transactions to include in block.
+    * weight_cost= The amount of weight required to accept a transaction in block, It is the sum of weights of all the ancestors of a transaction and the weight of transaction itself.
+    * fee_cost= The fee earned after we accept a transaction in block, It is the sum of fee of all the ancestors of a transaction and the fee of the transaction itself.
+    * efficiency= This is the ratio of fee_cost to weight_cost, the higher the efficiency, more favorable is the transaction. This will help us choose the transactions to include in block.
 3. Store all the offspring's of all transactions in a vector or array. offspring's of a transaction are all other transaction in it's family tree which lie below it.
 4. Iterate through all the transactions and find the most efficient transaction such that sum of it's weight cost with the weights of transaction accepted does not exceed weight limit.
 5. Accept the most efficient transaction after using Depth First Approach to include all ancestors first. Mark all the transactions which have been accepted.
