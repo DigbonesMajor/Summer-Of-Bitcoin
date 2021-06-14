@@ -22,9 +22,9 @@ This is my solution for the problem statement given as part of Summer Of Bitcoin
 7. Repeat Step 5 and 6 until there is no space or there is no valid transaction to accept.
 
 ### 2. Important Algorithms and Components
-1. *DFS and BFS*: Since, transactions may have parents, they can be represented by Directed Acyclic Graphs. Depth First Search and Breadth First Search are 2 most common graph Algorithms used in the code.
-2. *unordered_map and unordered_set*: unordered_map and unordered_set can help significantly reduce the time complexity of the code by reducing querying time from the order O(n) to O(1).
-3. *OOPS(Object Oriented Programming)*: Object Oriented Programming or OOPS helps in improving the structure, and readability of the code.
+1. #####DFS and BFS#####: Since, transactions may have parents, they can be represented by Directed Acyclic Graphs. Depth First Search and Breadth First Search are 2 most common graph Algorithms used in the code.
+2. #####unordered_map and unordered_set#####: unordered_map and unordered_set can help significantly reduce the time complexity of the code by reducing querying time from the order O(n) to O(1).
+3. #####OOPS(Object Oriented Programming)#####: Object Oriented Programming or OOPS helps in improving the structure, and readability of the code.
 
 ###3. Result Analysis
 1. The block file which contains the result of the code stores 3362 transactions.
