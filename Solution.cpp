@@ -2,8 +2,6 @@
 #include <fstream>
 using namespace std;
 
-int solver = 0;
-
 //A block class is created, all transactions will be instances of this class
 class block 
 {
@@ -24,12 +22,13 @@ int weight_limit = 4000000;
 vector<block> block_data; //We store all the blocks(transactions) in a vector
 
 //Function Declarations
-void map_txt_id(vector<block>, int);
-void calculate_efficiency(block, vector<bool>, long long &, long long &);
-void solve(vector<block>, int);
-void print_all(block);
-void adjust(block);
-void set_offspring(vector<block>, int);
+void map_txt_id(vector<block>&, int);
+void calculate_efficiency(block&, vector<bool>);
+void solve(vector<block>&, int);
+void print_all(block&,long long &, long long &);
+void adjust(block&);
+void set_offspring(vector<block>&, int);
+void setter(int, unordered_set<string>);
 
 int main()
 {
@@ -51,7 +50,7 @@ int main()
     // STEP 2:- Mapping txt_id of all blocks to corresponding index in vector block_data so we can optimally get the contents of a block if txt_id is known.
     map_txt_id(block_data, total_transactions);
 
-    // STEP 3:- Storing txt_id of all the blocks which are direct children of a block. 
+    // STEP 3:- Storing txt_id of all the descendants of all blocks in offspring instance
     set_offspring(block_data, total_transactions);
 
     /* 
@@ -68,20 +67,13 @@ int main()
     */
     vector<bool> blocks_done(total_transactions,false);
     for (int i = 0; i < total_transactions; i++)
-    {
-        if (block_data[i].parents.size() == 0)
-        {
-            block_data[i].efficiency = (double)block_data[i].fee / block_data[i].weight;
-        }
-        else
-        {
-            calculate_efficiency(block_data[i], blocks_done, block_data[i].weight_cost, block_data[i].fee_cost); //Calculating the efficiency of each block in block_data
-            if (block_data[i].weight_cost > weight_limit)
-                block_data[i].efficiency = -1;
-            else
-                block_data[i].efficiency = (double)block_data[i].fee_cost / block_data[i].weight_cost;
-        }
+    {   
+        calculate_efficiency(block_data[i], blocks_done); //Calculates the weight and fee cost of each block
+        block_data[i].efficiency = (double)block_data[i].fee_cost / block_data[i].weight_cost;
     }
+
+    // cout<<block_data[0].weight_cost<<endl;
+    // cout<<block_data[1].weight_cost<<endl;
 
 
     //Step 5:- We call the solve function which will print all the blocks in order maximizing fee.
@@ -128,47 +120,44 @@ void block::add_block(string t)
 }
 
 //map_txt_id maps txt_id of a block to it's index, used in Step 2.
-void map_txt_id(vector<block> block_data, int total_transactions)
+void map_txt_id(vector<block>& block_data, int total_transactions)
 {
-    for (int i = 0; i < total_transactions; i++)
-    {
-        give_index[block_data[i].txt_id] = i;
-    }
+    for (int i = 0; i < total_transactions; i++) give_index[block_data[i].txt_id] = i;
 }
 
 //set_offspring stores all direct children of a block in the offspring attribute of the block, used in Step 3.
-void set_offspring(vector<block> block_data, int total_transactions)
+void set_offspring(vector<block>& block_data, int total_transactions)
 {
-    for (int i = 0; i < total_transactions; i++)
+    for(int i=0;i<total_transactions;i++)
     {
-        stack<string> s;
-        for (auto x : block_data[i].parents)
-        {
-            block_data[i].offspring.insert(x);
-            s.push(x);
-        }
-        while(!s.empty())
-        {
-            string y=s.top();s.pop();
-            for(auto z:block_data[give_index[y]].parents)
-            {
-                s.push(z);
-                block_data[i].offspring.insert(z);
-            }
-        }
-
+        unordered_set<string> temp;
+        temp.insert(block_data[i].txt_id);
+        setter(i,temp);
     }
+
+}
+
+void setter(int i, unordered_set<string> temp)
+{
+    for(auto x:block_data[i].parents)
+    {
+        block_data[give_index[x]].offspring.insert(temp.begin(),temp.end());
+        unordered_set<string> temp2=temp;
+        temp2.insert(x);
+        setter(give_index[x],temp2);
+    }
+
 }
 
 //For blocks with one or more parents calculate_efficiency is called to calculate efficiency of a block which will be a deciding factor in deciding the order of blocks to select by using Breadth First Algorithm, used in Step 4.
-void calculate_efficiency(block current, vector<bool> blocks_done, long long &current_weight, long long &current_fee)
+void calculate_efficiency(block& current, vector<bool> blocks_done)
 {
     stack<string> s;
     for (auto x : current.parents)
     {
         s.push(x);
-        current_weight += block_data[give_index[x]].weight;
-        current_fee += block_data[give_index[x]].fee;
+        current.weight_cost += block_data[give_index[x]].weight;
+        current.fee_cost += block_data[give_index[x]].fee;
         blocks_done[give_index[x]] = true;
     }
     while (!s.empty())
@@ -182,8 +171,8 @@ void calculate_efficiency(block current, vector<bool> blocks_done, long long &cu
             else
             {
                 s.push(y);
-                current_weight += block_data[give_index[y]].weight;
-                current_fee += block_data[give_index[y]].fee;
+                current.weight_cost += block_data[give_index[y]].weight;
+                current.fee_cost += block_data[give_index[y]].fee;
                 blocks_done[give_index[y]] = true;
             }
         }
@@ -198,7 +187,7 @@ void calculate_efficiency(block current, vector<bool> blocks_done, long long &cu
         Step 5.2-> Solve function then calls print_all function on the found index which uses DFS( Depth First Search) Technique on the block and prints all the ancestors of the block which have not been selected yet and also goes through all their offsprings to adjust theie efficiency accordingly.
         Step 5.3-> Repeats Step 5.1 and Step 5.2 until there is no valid block of string left.
 */
-void solve(vector<block> block_data, int total_transactions)
+void solve(vector<block>& block_data, int total_transactions)
 {
     long long total_weight_accepted = 0, total_fee_earned = 0;
     while (1)
@@ -208,7 +197,7 @@ void solve(vector<block> block_data, int total_transactions)
         {
             if (accepted[block_data[i].txt_id])
                 continue;
-            if (total_weight_accepted + block_data[i].weight > weight_limit)
+            if (total_weight_accepted + block_data[i].weight_cost > weight_limit)
                 continue;
             else
             {
@@ -220,31 +209,29 @@ void solve(vector<block> block_data, int total_transactions)
             }
         }
         if(index==-1) break;
-        print_all(block_data[index]);
-        total_weight_accepted += block_data[index].weight;
-        total_fee_earned += block_data[index].fee;
+        print_all(block_data[index],total_weight_accepted,total_fee_earned);
     }
-    cout << total_weight_accepted << " " << total_fee_earned << endl;
 }
 
 // Used by Solve function to print all the unselected ancestors of given block in order and then finally print the block's txt_id.
-void print_all(block current)
+void print_all(block& current, long long & total_weight_accepted, long long & total_fee_earned)
 {
     for (auto x : current.parents)
     {
         if (accepted[block_data[give_index[x]].txt_id])
             continue;
         auto y = block_data[give_index[x]];
-        print_all(y);
+        print_all(y,total_weight_accepted,total_fee_earned);
     }
-    accepted[block_data[give_index[current.txt_id]].txt_id] = true;
+    accepted[current.txt_id] = true;
     cout << current.txt_id << endl;
     adjust(current);
-    solver++;
+    total_weight_accepted += current.weight;
+    total_fee_earned += current.fee;
 }
 
 //Used By print_all function to adjust the weight_cost, fee_cost and efficiency of the childrens of selected blocks.
-void adjust(block current)
+void adjust(block& current)
 {
     for (auto x : current.offspring)
     {
