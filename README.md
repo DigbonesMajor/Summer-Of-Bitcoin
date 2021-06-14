@@ -26,7 +26,7 @@ This is my solution for the problem statement given as part of Summer Of Bitcoin
 2. **unordered_map and unordered_set** : unordered_map and unordered_set can help significantly reduce the time complexity of the code by reducing querying time from the order O(n) to O(1).
 3. **OOPS(Object Oriented Programming)** : Object Oriented Programming or OOPS helps in improving the structure, and readability of the code.
 
-###3. Result Analysis
+### 3. Result Analysis
 1. The block file which contains the result of the code stores 3362 transactions.
 2. The total weight of the block is 3999936
 3. The total fee of the block is 5577415
