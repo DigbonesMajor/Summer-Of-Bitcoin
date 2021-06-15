@@ -142,7 +142,7 @@ void set_offspring(vector<block> &block_data, int total_transactions)
     }
 }
 
-//Setter function is called on each index of block_data by set_oofspring function. This function recursively finds out all the offsprings of block_data at index i.
+//Setter function is called on each index of block_data by set_offspring function. This function recursively finds out all the offsprings of block_data at index i.
 void setter(int i, unordered_set<string> temp)
 {
     for (auto x : block_data[i].parents)
