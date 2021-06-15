@@ -82,7 +82,7 @@ int main()
 
     //Step 5:- We call the solve function which will print all the blocks in order maximizing fee.
      solve(block_data, total_transactions);
-    // system("pause");
+     system("pause");
     // return 0;
 }
 
