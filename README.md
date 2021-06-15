@@ -16,7 +16,7 @@ This is my solution for the problem statement given as part of Summer Of Bitcoin
     * fee_cost= The fee earned after we accept a transaction in block, It is the sum of fee of all the ancestors of a transaction and the fee of the transaction itself.
     * efficiency= This is the ratio of fee_cost to weight_cost, the higher the efficiency, more favorable is the transaction. This will help us choose the transactions to include in block.
 3. Store all the offspring's of all transactions in a vector or array. offspring's of a transaction are all other transaction in it's family tree which lie below it.
-4. Iterate through all the transactions and find the most efficient transaction such that sum of it's weight cost with the weights of transaction accepted does not exceed weight limit.
+4. Iterate through all the transactions and find the most efficient transaction such that sum of it's weight cost with the weights of transaction already accepted does not exceed weight limit.
 5. Accept the most efficient transaction after using Depth First Approach to include all ancestors first. Mark all the transactions which have been accepted.
 6. The impact of transactions approved in Step 5 on their offspring's (weight_cost, fee_cost,efficiency) need to be removed, as they no longer impact the remaining transaction. Iterate through their offspring's and subtract weight and fee of accepted transactions.
 7. Repeat Step 5 and 6 until there is no space or there is no valid transaction to accept.
