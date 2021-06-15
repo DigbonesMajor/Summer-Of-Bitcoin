@@ -77,14 +77,13 @@ int main()
         calculate_efficiency(block_data[i], blocks_done); //Calculates the weight and fee cost of each block
         block_data[i].efficiency = (double)block_data[i].fee_cost / block_data[i].weight_cost;
     }
-
     // cout<<block_data[0].weight_cost<<endl;
     // cout<<block_data[1].weight_cost<<endl;
 
     //Step 5:- We call the solve function which will print all the blocks in order maximizing fee.
-    solve(block_data, total_transactions);
-    system("pause");
-    return 0;
+     solve(block_data, total_transactions);
+    // system("pause");
+    // return 0;
 }
 
 //add_block method of Class block iterates through the input string and intitalises the value of instance attributes accordingly, used in Step 1
@@ -198,7 +197,8 @@ void solve(vector<block> &block_data, int total_transactions)
     long long total_weight_accepted = 0, total_fee_earned = 0;
     while (1)
     {
-        int index = -1, eff = 0;
+        int index = -1;
+        double eff = 0;
         for (int i = 0; i < total_transactions; i++)
         {
             if (accepted[block_data[i].txt_id])
